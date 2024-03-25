@@ -1,0 +1,7 @@
+{% extends 'index.html' %}
+{% block content %}
+    <form action="/extraction" method="post">
+        <input type="text" placeholder="Podaj id produktu" name="product_id" required>
+        <input type="submit" value="rozpocznij proces ekstrakcji">
+    </form>
+{% endblock %}
