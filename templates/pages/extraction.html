@@ -1,7 +1,11 @@
 {% extends 'index.html' %}
 {% block content %}
+    {% if error %}
+        <h1>Wypełnij poprawnie formularz</h1>
+    {% endif %}
     <form action="/extraction" method="post">
-        <input type="text" placeholder="Podaj id produktu" name="product_id" required>
+        <input type="text" placeholder="Podaj id produktu" name="product_id">
         <input type="submit" value="rozpocznij proces ekstrakcji">
     </form>
+
 {% endblock %}
