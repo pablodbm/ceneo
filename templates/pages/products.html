@@ -1,0 +1,31 @@
+{% extends 'index.html' %}
+{% block content %}
+    <h1>Lista produktów</h1>
+     <table class="table">
+        <tr>
+            <th>Nazwa produktu</th>
+            <th>Liczba opinii</th>
+            <th>Liczba wad</th>
+            <th>Liczba zalet</th>
+            <th>średnia ocena</th>
+            <th>Pobierz dane</th>
+        </tr>
+        {% for product in products %}
+        	<tr>
+                <td>
+                    <a href="/product/{{ product.title }}">{{ product.title }}</a>
+                </td>
+            <td>{{ product.countReviews }}</td>
+            <td>{{ product.consCount }}</td>
+            <td>{{ product.prosCount }}</td>
+            <td>{{ product.avgMark }}</td>
+            <td>
+                <a href="/product/{{ product.id }}/csv">Pobierz csv</a>
+                <a href="/product/{{ product.id }}/json">Pobierz json</a>
+                <a href="/product/{{ product.id }}/xlsx">Pobierz xlsx</a>
+            </td>
+            </tr>
+        {% endfor %}
+
+     </table>
+{% endblock %}

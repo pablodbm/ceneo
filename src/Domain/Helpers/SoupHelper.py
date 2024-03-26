@@ -1,15 +1,15 @@
 from bs4 import BeautifulSoup
-import uuid
+import uuid, requests
 from src.Domain.ProsAndCons.ProsAndConsEnum import ProsAndConsEnum
 class SoupHelper:
     url = "https://www.ceneo.pl/"
 
     @staticmethod
     def getSoup(url, id):
-        with open('exampleCeneoSite.html', 'r', encoding='utf-8') as file:
-            html_content = file.read()
-        soup = BeautifulSoup(html_content, "html.parser")
-        return soup
+        response = requests.get(url+id)
+        if response.status_code == 200:
+            return BeautifulSoup(response.text, "html.parser")
+        return None
 
     @staticmethod
     def getName(soup):
@@ -17,6 +17,9 @@ class SoupHelper:
 
     @staticmethod
     def getReviewsCount(soup):
+        content = soup.find('div', class_="score-extend__review")
+        if content is None:
+            return 0
         return soup.find('div', class_="score-extend__review").text.split(" ")[0]
 
     @staticmethod
@@ -28,16 +31,20 @@ class SoupHelper:
         opinions = soup.find("div", class_="js_product-reviews js_reviews-hook js_product-reviews-container").find_all("div", class_="user-post user-post__card js_product-review")
         for opinion in opinions:
             reviewId = str(uuid.uuid4())
-            SoupHelper.saveSingleReview(opinion,productId, reviewId)
+            SoupHelper.saveSingleReview(opinion,productId, reviewId, opinion.get('data-review-id'))
 
 
-    def saveSingleReview(opinion, productId, reviewId):
+    def saveSingleReview(opinion, productId, reviewId, dataReviewId):
         from app import db, Review
         stars = SoupHelper.getStarsForReview(opinion)
         author = SoupHelper.getAuthorForReview(opinion)
         content = SoupHelper.getReviewContent(opinion)
-
-        newReview = Review(id=reviewId, productId=productId, author=author,content=content, stars=stars)
+        purchased = SoupHelper.isPurchased(opinion)
+        reviewAdded = SoupHelper.getReviewAdded(opinion)
+        itemPurchased = SoupHelper.isPurchased(opinion)
+        usefulReview = SoupHelper.getUsefulReview(opinion)
+        uselessReview = SoupHelper.getUselessReview(opinion)
+        newReview = Review(id=reviewId, productId=productId, author=author,content=content, stars=stars,purchased=purchased, reviewAdded=reviewAdded, itemPurchased=itemPurchased, usefulReview=usefulReview, uselessReview=uselessReview, dataReviewId=dataReviewId)
         db.session.add(newReview)
         db.session.commit()
 
@@ -50,6 +57,28 @@ class SoupHelper:
         return soup.find("span", class_="user-post__author-name").text.rstrip()
     def getReviewContent(soup):
         return soup.find("div", class_="user-post__text").text
+    def isPurchased(soup):
+        if soup.find("div", class_="review-pz") is not None:
+            return True
+        return False
+    def getReviewAdded(soup):
+        dates = soup.find_all("div", class_="user-post__published")
+        try:
+            return dates[0].get('datetime')
+        except IndexError:
+            return None
+    def getReviewAdded(soup):
+        dates = soup.find_all("div", class_="user-post__published")
+        try:
+            return dates[1].get('datetime')
+        except IndexError:
+            return None
+    def getUsefulReview(soup):
+        return soup.find("button",class_="vote-yes js_product-review-vote js_vote-yes").get('data-total-vote')
+    def getUselessReview(soup):
+        return soup.find("button",class_="vote-no js_product-review-vote js_vote-no").get('data-total-vote')
+
+
 
     def saveProsAndConsForReview(soup, productId, reviewId):
         rows = soup.find_all("div", class_="review-feature")
@@ -66,7 +95,4 @@ class SoupHelper:
                 db.session.add(newProsAndCons)
                 db.session.commit()
 
-
-    def getTextForProsAndCons(soup):
-        return
 

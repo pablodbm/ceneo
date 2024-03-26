@@ -15,6 +15,12 @@ class Review(db.Model):
     author = db.Column(db.String(128), nullable=False)
     content = db.Column(db.String(1024), nullable=False)
     stars = db.Column(db.String(16), nullable=False)
+    purchased = db.Column(db.Boolean, nullable=True, default=False)
+    reviewAdded = db.Column(db.String(64), nullable=True)
+    itemPurchased = db.Column(db.String(64), nullable=True)
+    usefulReview = db.Column(db.Integer, nullable=True, default=0)
+    uselessReview = db.Column(db.Integer, nullable=True, default=0)
+    dataReviewId = db.Column(db.String(64), nullable=True)
 
 class ProsAndCons(db.Model):
     id = db.Column(db.String(64), primary_key=True)

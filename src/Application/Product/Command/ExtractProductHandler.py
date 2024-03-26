@@ -12,6 +12,8 @@ class ExtractProductHandler:
     def handle(command):
 
         soup = SoupHelper.getSoup(SoupHelper.url,command.id)
+        if soup is None:
+            return None
 
         title = SoupHelper.getName(soup)
         reviewsCount = SoupHelper.getReviewsCount(soup)
@@ -22,12 +24,14 @@ class ExtractProductHandler:
         ExtractProductHandler.deleteProduct(title)
         ExtractProductHandler.saveProduct(productId,title,avgMark, reviewsCount)
 
-        opinions = SoupHelper.getAllReviews(soup, productId)
+        SoupHelper.getAllReviews(soup, productId)
+
+        return title
 
 
 
     def deleteProduct(title):
-        from app import db, Product
+        from app import db
         from sqlalchemy import text
 
         sql_query = text("SELECT id FROM product WHERE title = :title")

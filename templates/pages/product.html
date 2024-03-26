@@ -1,4 +1,34 @@
 {% extends 'index.html' %}
 {% block content %}
-    <h1>Id produktu: {{ product }}</h1>
+    <h1>Nazwa produktu: {{ data.product['title'] }}</h1>
+    <table class="table">
+        <tr>
+            <th>Autor</th>
+            <th>Zawartość</th>
+            <th>ilość gwiazdek</th>
+            <th>Data zakupu</th>
+            <th>Data dodania oceny</th>
+            <th>Czy zakupiono</th>
+            <th>ilość pozytywnych ocen recenzji</th>
+            <th>ilość negatywnych ocen recenzji</th>
+        </tr>
+        {% for review in data.reviews %}
+            <tr>
+                <td>{{ review.author }}</td>
+                <td>{{ review.content }}</td>
+                <td>{{ review.stars }}</td>
+                <td>{{ review.itemPurchased }}</td>
+                <td>{{ review.reviewAdded }}</td>
+                <td>
+                    {% if review.purchased %}
+                       Kupiono
+                    {% else %}
+                        Nie kupiono
+                    {% endif %}
+                </td>
+                <td>{{ review.usefulReview }}</td>
+                <td>{{ review.uselessReview }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}
