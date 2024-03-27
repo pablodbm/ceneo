@@ -1,5 +1,3 @@
-from bs4 import BeautifulSoup
-import json
 import uuid
 from src.Domain.Helpers.SoupHelper import SoupHelper
 

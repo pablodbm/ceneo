@@ -5,12 +5,12 @@ from src.Domain.ProsAndCons.ProsAndConsEnum import ProsAndConsEnum
 
 class productRepository:
     @staticmethod
-    def query(productTitle):
+    def query(productTitle, request):
         productDetails = productRepository.getProductByTitle(productTitle)
         if productDetails is None:
             return None
         productDetailsView = ProductDetails(productDetails)
-        productDetailsView.reviews = ReviewRepository.getReviewsByProductId(productDetailsView.product['id'])
+        productDetailsView.reviews = ReviewRepository.getReviewsByProductId(productDetailsView.product['id'], request)
         productDetailsView.setProsCount(ProsAndConsRepository.countProsOrCons(productDetailsView.product['id'],ProsAndConsEnum.pros))
         productDetailsView.setConsCount(ProsAndConsRepository.countProsOrCons(productDetailsView.product['id'],ProsAndConsEnum.cons))
         return productDetailsView
@@ -34,7 +34,6 @@ class productRepository:
         sql_query = text("SELECT * FROM product")
         result = db.session.execute(sql_query)
         products = [dict(zip(result.keys(), row)) for row in result.fetchall()]
-        # print(products)
         for product in products:
             product['countReviews'] = ReviewRepository.countForProductId(product['id'])
             product['prosCount'] = ProsAndConsRepository.countProsOrCons(product['id'],ProsAndConsEnum.pros)

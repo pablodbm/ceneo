@@ -21,6 +21,7 @@ class Review(db.Model):
     usefulReview = db.Column(db.Integer, nullable=True, default=0)
     uselessReview = db.Column(db.Integer, nullable=True, default=0)
     dataReviewId = db.Column(db.String(64), nullable=True)
+    recommended = db.Column(db.Boolean, nullable=True, default=False)
 
 class ProsAndCons(db.Model):
     id = db.Column(db.String(64), primary_key=True)

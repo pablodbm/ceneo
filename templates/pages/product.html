@@ -1,6 +1,66 @@
 {% extends 'index.html' %}
 {% block content %}
     <h1>Nazwa produktu: {{ data.product['title'] }}</h1>
+    <a href="/product/{{data.product['title']}}">Wyczyść filtry</a>
+    <br>
+    <a href="/product/charts/{{data.product['title']}}">Przejdz do strony z wykresami</a>
+    <form action="">
+        <select name="sortBy">
+            <option value="author" {% if sortBy == 'author' %} selected="selected" {% endif %}>Author</option>
+            <option value="stars" {% if sortBy == 'stars'%} selected="selected" {% endif %}>Ilośc gwiazdek</option>
+            <option value="content" {% if sortBy == 'content'%} selected="selected" {% endif %}>Zwartość</option>
+            <option value="purchased" {% if sortBy == 'purchased'%} selected="selected" {% endif %}>Czy zakupiono</option>
+            <option value="reviewAdded" {% if sortBy == 'reviewAdded'%} selected="selected" {% endif %}>Data dodania opinii</option>
+            <option value="itemPurchased" {% if sortBy == 'itemPurchased'%} selected="selected" {% endif %}>Data zakupu</option>
+            <option value="usefulReview" {% if sortBy == 'usefulReview'%} selected="selected" {% endif %}>Ilośc pozytywnych opinii</option>
+            <option value="uselessReview" {% if sortBy == 'uselessReview'%} selected="selected" {% endif %}>Ilośc negatywnych opinii</option>
+        </select>
+        <select name="orderBy">
+            <option value="ASC" {% if orderBy == 'ASC'%} selected="selected" {% endif %}>Rosnąco</option>
+            <option value="DESC" {% if orderBy == 'DESC'%} selected="selected" {% endif %}>Malejąco</option>
+        </select>
+        <input type="submit" value="Sortuj">
+    </form>
+    <form action="">
+        od: <input type="number" name="starsFrom" placeholder="ilośc gwiazdek od" value="0" min="0" max="5">
+        do: <input type="number" name="starsTo" placeholder="ilośc gwiazdek do" value="5" min="0" max="5">
+        <input type="submit" value="Filtruj po ilości gwiazdek">
+    </form>
+    <form action="">
+        Wyszukaj autora: <input type="text" name="authorName" placeholder="nazwa autora">
+        <input type="submit" value="Wyszukaj autora">
+    </form>
+    <form action="">
+        Wyszukaj opinie po treści: <input type="text" name="contentValue" placeholder="treść opinii">
+        <input type="submit" value="Wyszukaj treść">
+    </form>
+    <form action="" id="datePurchasedFilter">
+        Data zakupu od: <input type="date" id="purchasedDateFrom" name="purchasedDateFrom">
+        Data zakupu do: <input type="date" id="purchasedDateTo" name="purchasedDateTo">
+        <input type="submit" value="Wyszukaj po dacie zakupu">
+    </form>
+    <form action="" id="dateReviewFilter">
+        Data dodania opinii od: <input type="date" id="reviewDateFrom" name="reviewDateFrom">
+        Data dodania opinii do: <input type="date" id="reviewDateTo" name="reviewDateTo">
+        <input type="submit" value="Wyszukaj po dacie dodania opinii">
+    </form>
+    <form action="">
+        <select name="isPurchased">
+            <option value="1">Tak</option>
+            <option value="0">Nie</option>
+        </select>
+    <input type="submit" value="Wyszukaj po zakupionym produkcie">
+    </form>
+    <form action="" id="useFulReviewForm">
+        od: <input type="number" name="usefulReviewFrom"  value="0" min="0" max="5">
+        do: <input type="number" name="usefulReviewTo" id="usefulReviewTo" value="0" min="0">
+        <input type="submit" value="Filtruj po ilości pozytywnych recenzji">
+    </form>
+    <form action="" id="uselessReviewForm">
+        od: <input type="number" name="uselessReviewFrom"  value="0" min="0" max="5">
+        do: <input type="number" name="uselessReviewTo" id="uselessReviewTo" value="0" min="0">
+        <input type="submit" value="Filtruj po ilości negatywnych recenzji">
+    </form>
     <table class="table">
         <tr>
             <th>Autor</th>
@@ -31,4 +91,46 @@
             </tr>
         {% endfor %}
     </table>
+    <script>
+        document.getElementById("datePurchasedFilter").addEventListener("submit",(e)=>{
+            e.preventDefault()
+            const purchasedDateFrom = document.getElementById("purchasedDateFrom")
+            const purchasedDateTo = document.getElementById("purchasedDateTo")
+            if (!purchasedDateFrom.value){
+                purchasedDateFrom.value = "1900-01-01"
+            }
+            if (!purchasedDateTo.value){
+                purchasedDateTo.value = "2100-01-01"
+            }
+            document.getElementById("datePurchasedFilter").submit()
+        })
+        document.getElementById("dateReviewFilter").addEventListener("submit",(e)=>{
+            e.preventDefault()
+            const reviewDateFrom = document.getElementById("reviewDateFrom")
+            const reviewDateTo = document.getElementById("reviewDateTo")
+            if (!reviewDateFrom.value){
+                reviewDateFrom.value = "1900-01-01"
+            }
+            if (!reviewDateTo.value){
+                reviewDateTo.value = "2100-01-01"
+            }
+            document.getElementById("dateReviewFilter").submit()
+        })
+        document.getElementById("useFulReviewForm").addEventListener("submit",(e)=>{
+            e.preventDefault()
+            const usefulReviewTo = document.getElementById("usefulReviewTo")
+            if(usefulReviewTo.value == 0){
+                usefulReviewTo.value = 9999999
+            }
+            document.getElementById("useFulReviewForm").submit()
+        })
+        document.getElementById("uselessReviewForm").addEventListener("submit",(e)=>{
+            e.preventDefault()
+            const uselessReviewTo = document.getElementById("uselessReviewTo")
+            if(uselessReviewTo.value == 0){
+                uselessReviewTo.value = 9999999
+            }
+            document.getElementById("uselessReviewForm").submit()
+        })
+    </script>
 {% endblock %}

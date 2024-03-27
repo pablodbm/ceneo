@@ -1,0 +1,50 @@
+{% extends 'index.html' %}
+{% block content %}
+    <a href="../../product/{{ productName }}">Wróc do strony produktu</a>
+    <h1>Wykres</h1><div>
+  <canvas id="barChart"></canvas>
+  <canvas id="doughnutChart"></canvas>
+</div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const barChart = document.getElementById('barChart');
+  const doughnut = document.getElementById('doughnutChart');
+  new Chart(barChart, {
+    type: 'bar',
+    data: {
+      labels: ['1','1,5', '2','2,5', '3','3,5', '4','4,5', '5'],
+      datasets: [{
+        label: 'ilośc gwiazdek',
+        data: [ {{ barChart['one_star_reviews']}},{{ barChart['one_half_star_reviews']}} ,{{ barChart['two_star_reviews'] }},{{ barChart['two_half_star_reviews'] }}, {{ barChart['three_star_reviews'] }}, {{ barChart['three_half_star_reviews'] }},{{ barChart['four_star_reviews'] }},{{ barChart['four_half_star_reviews'] }}, {{ barChart['five_star_reviews'] }}],
+        borderWidth: 1
+      }]
+    },
+       options: {
+        maintainAspectRatio: false, // Nie zachowuj proporcji
+        responsive: false, // Nie reaguj na zmiany rozmiaru
+        width: 800, // Szerokość w pikselach
+        height: 400 // Wysokość w pikselach
+    }
+  });
+  new Chart(doughnut, {
+    type: 'doughnut',
+    data: {
+        datasets: [{
+        data: [{{ DoughnutChart['true_count'] }}, {{ DoughnutChart['false_count'] }}]
+    }],
+
+    labels: [
+        'Pozytywna',
+        'Negatywna'
+    ]
+    },
+       options: {
+        maintainAspectRatio: false, // Nie zachowuj proporcji
+        responsive: false, // Nie reaguj na zmiany rozmiaru
+        width: 800, // Szerokość w pikselach
+        height: 400 // Wysokość w pikselach
+    }
+  });
+
+</script>
+{% endblock %}

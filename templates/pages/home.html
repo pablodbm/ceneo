@@ -1,0 +1,52 @@
+{% extends 'index.html' %}
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            Cel aplikacji
+          </div>
+        <div class="card-body">
+            <blockquote class="blockquote mb-0">
+                <p>Celem aplikacji jest umożliwienie scrapowania produktów ze strony ceneo</p>
+            </blockquote>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            Opis działania aplikacji
+          </div>
+        <div class="card-body">
+            <blockquote class="blockquote mb-0">
+                <p>Aplikacja na podstawie kodu produktu pobiera ze strony ceneo informacje odnośnie opinii, wad i zalet itp.
+                    Dla każdego produktu dane mapowane są na 3 tabele: product, review, pros_and_cons które później stanowią źródło do
+                generowania raportów lub wyświetlania danych na stronie</p>
+            </blockquote>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            Zastosowane biblioteki
+          </div>
+        <div class="card-body">
+            <blockquote class="blockquote mb-0">
+               <ul>
+                   <li>Bootstrap</li>
+                   <li>Flask</li>
+                   <li>bs4</li>
+                   <li>flask_csv</li>
+                   <li>flask_sqlalchemy</li>
+                   <li>xlwt</li>
+               </ul>
+            </blockquote>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            Zastosowane podejścia
+          </div>
+        <div class="card-body">
+            <blockquote class="blockquote mb-0">
+                <p>W projekcie zaimplementowany jest wzorzec DDD oraz częściowa implementacja CQRS pokazana na przykładzie operacji wyciągania danych z html</p>
+            </blockquote>
+        </div>
+    </div>
+{% endblock %}

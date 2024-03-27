@@ -13,7 +13,7 @@ class SoupHelper:
 
     @staticmethod
     def getName(soup):
-        return soup.find("h1", class_="product-top__product-info__name").text
+        return soup.find("h1", class_="product-top__product-info__name").text.replace("/"," ")
 
     @staticmethod
     def getReviewsCount(soup):
@@ -41,10 +41,11 @@ class SoupHelper:
         content = SoupHelper.getReviewContent(opinion)
         purchased = SoupHelper.isPurchased(opinion)
         reviewAdded = SoupHelper.getReviewAdded(opinion)
-        itemPurchased = SoupHelper.isPurchased(opinion)
+        itemPurchased = SoupHelper.getPurchasedTime(opinion)
         usefulReview = SoupHelper.getUsefulReview(opinion)
         uselessReview = SoupHelper.getUselessReview(opinion)
-        newReview = Review(id=reviewId, productId=productId, author=author,content=content, stars=stars,purchased=purchased, reviewAdded=reviewAdded, itemPurchased=itemPurchased, usefulReview=usefulReview, uselessReview=uselessReview, dataReviewId=dataReviewId)
+        recommended = SoupHelper.isRecommended(opinion)
+        newReview = Review(id=reviewId, productId=productId, author=author,content=content, stars=stars,purchased=purchased, reviewAdded=reviewAdded, itemPurchased=itemPurchased, usefulReview=usefulReview, uselessReview=uselessReview, dataReviewId=dataReviewId, recommended=recommended)
         db.session.add(newReview)
         db.session.commit()
 
@@ -62,13 +63,13 @@ class SoupHelper:
             return True
         return False
     def getReviewAdded(soup):
-        dates = soup.find_all("div", class_="user-post__published")
+        dates = soup.find("span", class_="user-post__published").find_all("time")
         try:
             return dates[0].get('datetime')
         except IndexError:
             return None
-    def getReviewAdded(soup):
-        dates = soup.find_all("div", class_="user-post__published")
+    def getPurchasedTime(soup):
+        dates = soup.find("span", class_="user-post__published").find_all("time")
         try:
             return dates[1].get('datetime')
         except IndexError:
@@ -77,6 +78,16 @@ class SoupHelper:
         return soup.find("button",class_="vote-yes js_product-review-vote js_vote-yes").get('data-total-vote')
     def getUselessReview(soup):
         return soup.find("button",class_="vote-no js_product-review-vote js_vote-no").get('data-total-vote')
+    def isRecommended(soup):
+        span = soup.find("span", class_="user-post__author-recomendation")
+        if span == None:
+            return None
+        em = span.find("em")
+        if em.get('class')[0] == 'recommended':
+            return True
+        else:
+            return False
+
 
 
 
